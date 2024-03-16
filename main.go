@@ -15,7 +15,7 @@ func main() {
 
 	bot.Debug = true
 
-	logrus.Info("Authorized on account %s", bot.Self.UserName)
+	logrus.Infof("Authorized on account %s", bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60

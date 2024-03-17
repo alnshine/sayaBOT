@@ -1,27 +1,15 @@
-package main
+package api
 
 import (
-	"fmt"
-	"os"
 	"time"
 
 	"github.com/alnshine/sayaBOT/internal/models"
+	"github.com/alnshine/sayaBOT/internal/repository"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
 
-func main() {
-	log := logrus.New()
-
-	tgbotapi.SetLogger(log)
-
-	if err := godotenv.Load(); err != nil {
-		log.Fatalf("error with loading env files: %s", err.Error())
-	}
-
-	token := os.Getenv("TOKEN")
-
+func RunTelegramAPI(log *logrus.Logger, token string, repo *repository.Repository) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		log.Panic(err)
@@ -49,7 +37,7 @@ func main() {
 		msg := tgbotapi.NewMessage(chatID, "")
 
 		if update.Message.Chat.Type != "group" && update.Message.Chat.Type != "supergroup" {
-			msg.Text = "Я не могу нихуя делать. Даун, добавь сначала меня в группу!"
+			msg.Text = "Firstly, add me to group"
 			bot.Send(msg)
 			continue
 		}
@@ -66,7 +54,9 @@ func main() {
 			ChatId:   update.Message.Chat.ID,
 		}
 
-		fmt.Println(message)
+		if err := repo.Message.CreateMessage(message); err != nil {
+			log.Errorf("Failed to create message: %s", err.Error())
+		}
 
 		switch update.Message.Command() {
 		case "start":

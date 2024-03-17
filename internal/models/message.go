@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+type Chat struct {
+	Messages []Message `json:"messages"`
+}
+
 type Message struct {
 	ID       int       `json:"id"`
 	Content  string    `json:"content"`

@@ -56,14 +56,13 @@ def load_json(filename, text):
 
 
     data = {
-        "response": [
+        "response":
             {
                 "retelling": text,
                 "time-start": time_start,
                 "time-end": time_end,
                 "chat-id": chat_id
             }
-        ]
     }
 
     with open("response.json", "w", encoding="utf-8") as json_file:
@@ -108,5 +107,6 @@ def model(filename:str):
 
 def main():
     model("example.json")
+    
 if __name__ == "__main__":
     main()

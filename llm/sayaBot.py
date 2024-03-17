@@ -1,10 +1,11 @@
 import google.generativeai as genai
+from dotenv import load_dotenv
+import os
 
 def main():
-    GOOGLE_API_KEY = "AIzaSyBee24cm7NDiA6YVeJG2vhQaImc6UWUNYA"
-
+    load_dotenv()
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
     genai.configure(api_key=GOOGLE_API_KEY)
-
     model = genai.GenerativeModel('gemini-pro')
 
     config = {"max_output_tokens": 2048, "temperature": 0.4, "top_p": 1, "top_k": 32}

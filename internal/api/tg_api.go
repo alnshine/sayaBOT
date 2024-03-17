@@ -37,7 +37,7 @@ func RunTelegramAPI(log *logrus.Logger, token string, repo *repository.Repositor
 		msg := tgbotapi.NewMessage(chatID, "")
 
 		if update.Message.Chat.Type != "group" && update.Message.Chat.Type != "supergroup" {
-			msg.Text = "Firstly, add me to group"
+			msg.Text = "Firstly, add me to group!"
 			bot.Send(msg)
 			continue
 		}
@@ -59,12 +59,28 @@ func RunTelegramAPI(log *logrus.Logger, token string, repo *repository.Repositor
 		}
 
 		switch update.Message.Command() {
-		case "start":
-			msg.Text = "Начинаем запуск!"
+		case "help":
+			msg.Text = "This is help!"
 			bot.Send(msg)
 			continue
 		case "shortHour":
+			endTime := time.Now()
+			startTime := endTime.Add(-time.Hour)
 
+			messages, err := repo.GetMessagesForTimeInterval(startTime, endTime)
+			if err != nil {
+				log.Errorf("Failed to get messages: %s", err.Error())
+			}
+
+			responseMsg, err := GetRetellingToLastHour(messages)
+			if err != nil {
+				log.Errorf("Failed to get retelling: %s", err.Error())
+			}
+
+			msg := tgbotapi.NewMessage(chatID, responseMsg)
+			if _, err := bot.Send(msg); err != nil {
+				log.Errorf("Failed to send message to Telegram: %s", err.Error())
+			}
 		}
 	}
 }

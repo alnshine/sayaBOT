@@ -9,9 +9,9 @@ type Chat struct {
 }
 
 type Message struct {
-	ID       int       `json:"id"`
-	Content  string    `json:"content"`
-	Username string    `json:"username"`
-	Time     time.Time `json:"time"`
-	ChatId   int64     `json:"chat_id"`
+	ID       int       `json:"id" db:"id"`
+	Content  string    `json:"content" db:"content"`
+	Username string    `json:"username" db:"username"`
+	Time     time.Time `json:"time" db:"time"`
+	ChatId   int64     `json:"chat_id" db:"chat_id"`
 }

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/alnshine/sayaBOT/internal/models"
 	"github.com/jmoiron/sqlx"
@@ -25,4 +26,17 @@ func (r *MessagePostgres) CreateMessage(message models.Message) error {
 		return err
 	}
 	return nil
+}
+
+func (r *MessagePostgres) GetMessagesForTimeInterval(startTime, endTime time.Time) ([]models.Message, error) {
+	var lists []models.Message
+	strQuery := `
+		SELECT id, content, username, time, chat_id
+		FROM %s
+		WHERE time BETWEEN $1 AND $2
+	`
+
+	query := fmt.Sprintf(strQuery, messageTable)
+	err := r.db.Select(&lists, query, startTime, endTime)
+	return lists, err
 }

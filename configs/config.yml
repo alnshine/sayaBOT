@@ -1,6 +1,6 @@
 db:
-  username: postgres
-  host: localhost
-  port: 5435
-  dbname: saya_bot
-  sslmode: disable
+  username: doadmin
+  host: db-postgresql-fra1-19165-do-user-14425299-0.c.db.ondigitalocean.com
+  port: 25060
+  dbname: defaultdb
+  sslmode: require

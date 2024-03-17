@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
+	"github.com/alnshine/sayaBOT/internal/models"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -38,9 +40,10 @@ func main() {
 	}
 
 	for update := range updates {
-		if update.Message == nil {
+		if update.Message == nil || update.Message.Sticker != nil {
 			continue
 		}
+
 		chatID := update.Message.Chat.ID
 
 		msg := tgbotapi.NewMessage(chatID, "")
@@ -51,29 +54,27 @@ func main() {
 			continue
 		}
 
+		var messageTime time.Time
+		if update.Message.Date != 0 {
+			messageTime = time.Unix(int64(update.Message.Date), 0)
+		}
+
+		message := models.Message{
+			Content:  update.Message.Text,
+			Username: update.Message.From.UserName,
+			Time:     messageTime,
+			ChatId:   update.Message.Chat.ID,
+		}
+
+		fmt.Println(message)
+
 		switch update.Message.Command() {
 		case "start":
 			msg.Text = "Начинаем запуск!"
 			bot.Send(msg)
 			continue
 		case "shortHour":
-			messageID := update.Message.MessageID
 
-			updates, err := bot.GetUpdates(tgbotapi.UpdateConfig{
-				Offset:  messageID + 1,
-				Limit:   1000,
-				Timeout: 0,
-			})
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-
-			for _, update := range updates {
-				if update.Message != nil {
-					fmt.Printf("[%s] %s\n", update.Message.From.UserName, update.Message.Text)
-				}
-			}
 		}
 	}
 }

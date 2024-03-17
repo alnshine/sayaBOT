@@ -1,7 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
 
@@ -10,7 +14,13 @@ func main() {
 
 	tgbotapi.SetLogger(log)
 
-	bot, err := tgbotapi.NewBotAPI("6791189994:AAHhBbR36kIx4iRzi51kyWZZJBaR0em5FX4")
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("error with loading env files: %s", err.Error())
+	}
+
+	token := os.Getenv("TOKEN")
+
+	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -31,8 +41,9 @@ func main() {
 		if update.Message == nil {
 			continue
 		}
+		chatID := update.Message.Chat.ID
 
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
+		msg := tgbotapi.NewMessage(chatID, "")
 
 		if update.Message.Chat.Type != "group" && update.Message.Chat.Type != "supergroup" {
 			msg.Text = "Я не могу нихуя делать. Даун, добавь сначала меня в группу!"
@@ -43,10 +54,26 @@ func main() {
 		switch update.Message.Command() {
 		case "start":
 			msg.Text = "Начинаем запуск!"
-		default:
-			msg.Text = "Дебил, я не знаю что это за команда!!!"
-		}
+			bot.Send(msg)
+			continue
+		case "shortHour":
+			messageID := update.Message.MessageID
 
-		bot.Send(msg)
+			updates, err := bot.GetUpdates(tgbotapi.UpdateConfig{
+				Offset:  messageID + 1,
+				Limit:   1000,
+				Timeout: 0,
+			})
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+
+			for _, update := range updates {
+				if update.Message != nil {
+					fmt.Printf("[%s] %s\n", update.Message.From.UserName, update.Message.Text)
+				}
+			}
+		}
 	}
 }

@@ -4,12 +4,12 @@ import (
 	"time"
 
 	"github.com/alnshine/sayaBOT/internal/models"
-	"github.com/alnshine/sayaBOT/internal/repository"
+	"github.com/alnshine/sayaBOT/internal/service"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/sirupsen/logrus"
 )
 
-func RunTelegramAPI(log *logrus.Logger, token string, repo *repository.Repository) {
+func RunTelegramAPI(log *logrus.Logger, token string, service *service.Service) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		log.Panic(err)
@@ -54,7 +54,7 @@ func RunTelegramAPI(log *logrus.Logger, token string, repo *repository.Repositor
 			ChatId:   update.Message.Chat.ID,
 		}
 
-		if err := repo.Message.CreateMessage(message); err != nil {
+		if err := service.Message.CreateMessage(message); err != nil {
 			log.Errorf("Failed to create message: %s", err.Error())
 		}
 
@@ -64,17 +64,10 @@ func RunTelegramAPI(log *logrus.Logger, token string, repo *repository.Repositor
 			bot.Send(msg)
 			continue
 		case "shortHour":
-			endTime := time.Now()
-			startTime := endTime.Add(-time.Hour)
-
-			messages, err := repo.GetMessagesForTimeInterval(startTime, endTime, update.Message.Chat.ID)
+			chatID := update.Message.Chat.ID
+			responseMsg, err := service.GetMessagesForTimeInterval(chatID)
 			if err != nil {
 				log.Errorf("Failed to get messages: %s", err.Error())
-			}
-
-			responseMsg, err := GetRetellingToLastHour(messages)
-			if err != nil {
-				log.Errorf("Failed to get retelling: %s", err.Error())
 			}
 
 			msg := tgbotapi.NewMessage(chatID, responseMsg)

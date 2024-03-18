@@ -1,4 +1,4 @@
-package api
+package communication
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"github.com/alnshine/sayaBOT/internal/models"
 )
 
-func GetRetellingToLastHour(messages []models.Message) (string, error) {
+func GetRetelling(messages []models.Message) (string, error) {
 	chat := models.Chat{
 		Messages: messages,
 	}

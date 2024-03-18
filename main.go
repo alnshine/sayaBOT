@@ -1,14 +1,16 @@
 package main
 
 import (
+	"os"
+
 	"github.com/alnshine/sayaBOT/configs"
 	"github.com/alnshine/sayaBOT/internal/api"
 	"github.com/alnshine/sayaBOT/internal/repository"
+	"github.com/alnshine/sayaBOT/internal/service"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"os"
 )
 
 func main() {
@@ -38,6 +40,7 @@ func main() {
 	}
 
 	repo := repository.NewRepository(db)
+	service := service.NewService(repo)
 
-	api.RunTelegramAPI(log, token, repo)
+	api.RunTelegramAPI(log, token, service)
 }

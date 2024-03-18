@@ -19,7 +19,7 @@ func GetRetelling(messages []models.Message) (string, error) {
 		return "", err
 	}
 
-	url := "http://localhost:5000/process_json"
+	url := "http://159.65.113.45:5000/process_json"
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(chatJSON))
 	if err != nil {
 		return "", err

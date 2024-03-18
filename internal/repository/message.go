@@ -37,6 +37,6 @@ func (r *MessagePostgres) GetMessagesForTimeInterval(startTime, endTime time.Tim
 	`
 
 	query := fmt.Sprintf(strQuery, messageTable)
-	err := r.db.Select(&lists, query, startTime, endTime)
+	err := r.db.Select(&lists, query, startTime, endTime, chatID)
 	return lists, err
 }

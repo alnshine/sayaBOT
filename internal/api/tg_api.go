@@ -67,7 +67,7 @@ func RunTelegramAPI(log *logrus.Logger, token string, repo *repository.Repositor
 			endTime := time.Now()
 			startTime := endTime.Add(-time.Hour)
 
-			messages, err := repo.GetMessagesForTimeInterval(startTime, endTime)
+			messages, err := repo.GetMessagesForTimeInterval(startTime, endTime, update.Message.Chat.ID)
 			if err != nil {
 				log.Errorf("Failed to get messages: %s", err.Error())
 			}

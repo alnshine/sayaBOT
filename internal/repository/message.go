@@ -28,12 +28,12 @@ func (r *MessagePostgres) CreateMessage(message models.Message) error {
 	return nil
 }
 
-func (r *MessagePostgres) GetMessagesForTimeInterval(startTime, endTime time.Time) ([]models.Message, error) {
+func (r *MessagePostgres) GetMessagesForTimeInterval(startTime, endTime time.Time, chatID int64) ([]models.Message, error) {
 	var lists []models.Message
 	strQuery := `
 		SELECT id, content, username, time, chat_id
 		FROM %s
-		WHERE time BETWEEN $1 AND $2
+		WHERE time BETWEEN $1 AND $2 AND chat_id = $3
 	`
 
 	query := fmt.Sprintf(strQuery, messageTable)

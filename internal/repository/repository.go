@@ -9,7 +9,7 @@ import (
 
 type Message interface {
 	CreateMessage(message models.Message) error
-	GetMessagesForTimeInterval(startTime, endTime time.Time) ([]models.Message, error)
+	GetMessagesForTimeInterval(startTime, endTime time.Time, chatID int64) ([]models.Message, error)
 }
 
 type Repository struct {

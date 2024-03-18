@@ -21,9 +21,6 @@ def process_json():
             json_data = request.json
             response_data = model(json_data)
             # Возвращаем созданный JSON-файл
-            return jsonify({"success": True, "response_data": response_data}), 200
+            return response_data, 200
         except Exception as e:
             return jsonify({"error": str(e)}), 400
-
-if __name__ == '__main__':
-    app.run(debug=True)

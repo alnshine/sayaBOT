@@ -3,17 +3,6 @@ from sayaBot import *
 
 app = Flask(__name__)
 
-# @app.route('/process_json', methods=['POST'])
-# def process_json():
-#     try:
-#         # Запускаем модель для обработки JSON-файла
-#         response_data = model('example.json')
-
-#         # Возвращаем созданный JSON-файл
-#         return send_file(response_data), 200
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 400
-
 @app.route('/process_json', methods=['POST'])
 def process_json():
     if request.method == "POST":

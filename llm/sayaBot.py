@@ -16,8 +16,7 @@ def get_args_json(json_data):
     prompt = ""
 
     try:
-        messages = json_data.get("messages", [])  # Получаем список сообщений из JSON данных
-
+        messages = json_data.get("messages", [])  
         for message in messages:
             content = message.get("content")
             message_time = message.get("time")
@@ -28,7 +27,7 @@ def get_args_json(json_data):
             time.append(message_time)
             names.append(name)
 
-        return contents, time, names, chat_id
+        return contents, time, chat_id
 
     except Exception as e:
         print("Ошибка при разборе JSON:", e)
@@ -40,7 +39,6 @@ def create_response(messages:str, chat:ChatSession, safety_settings=None, genera
     for message in messages:
         try:
             response = chat.send_message(message, safety_settings=safety_settings, generation_config=generation_config)
-            # print(response.text)
         except:
             perephrase = "перефразируй это сообщение: " + message
             try:
@@ -103,14 +101,7 @@ def model(json_data):
         },
     ]
     chat = model.start_chat(history=[])
-    messages, time, names, chat_id = get_args_json(json_data)
+    messages, time, chat_id = get_args_json(json_data)
     response = create_response(messages, chat, safe, config)
     response_data = load_json(time, chat_id, response)
     return response_data
-
-
-def main():
-    model("example.json")
-
-if __name__ == "__main__":
-    main()
